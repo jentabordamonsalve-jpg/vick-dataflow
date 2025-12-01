@@ -42,12 +42,14 @@ body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);
 .chat-input{display:flex;padding:12px;border-top:1px solid rgba(0,0,0,0.06)}
 .chat-input input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}
 .chat-input button{margin-left:8px;padding:10px 12px;border-radius:8px;border:none;background:var(--vick-green);color:white;font-weight:700}
+.message{margin-bottom:10px;padding:8px;border-radius:8px}
+.message.bot{background:#eefaf1}
+.message.user{background:#e8f1ff;text-align:right}
 /* Tooltips and notifications */
 .tooltip{position:relative;display:inline-block}
 .tooltip .tooltip-text{visibility:hidden;width:190px;background:var(--vick-blue);color:white;text-align:center;padding:6px;border-radius:6px;position:absolute;z-index:10;bottom:125%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .2s}
 .tooltip:hover .tooltip-text{visibility:visible;opacity:1}
 .notification{position:fixed;top:20px;right:20px;background:var(--vick-light);color:white;padding:12px 16px;border-radius:8px;display:none;z-index:1500}
-/* Responsive */
 @media(max-width:1000px){.sidebar{display:none}.content{margin:12px}}
 </style>
 </head>
@@ -105,7 +107,7 @@ body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);
     </div>
     <div class="card">
       <h3>Tendencias</h3>
-      <div class="city-buttons tooltip">
+      <div class="city-buttons tooltip" style="margin-bottom:10px">
         <button class="btn" onclick="cambiarCiudad('Bogotá')">Bogotá</button>
         <button class="btn" onclick="cambiarCiudad('Medellín')">Medellín</button>
         <button class="btn" onclick="cambiarCiudad('Cali')">Cali</button>
@@ -146,7 +148,7 @@ body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);
 
 </div>
 
-<!-- Avatar / Chatbot (existing) -->
+<!-- Avatar / Chatbot -->
 <div id="avatar-btn" title="Asistente VICK"><img src="data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='60' cy='60' r='60' fill='%23009e60'/><g transform='translate(16,16)'><circle cx='44' cy='30' r='22' fill='%23fff'/><path d='M44 64c-18 0-32 8-32 18v4h64v-4c0-10-14-18-32-18z' fill='%23f1f5fb'/><circle cx='36' cy='28' r='3.8' fill='%23022b49'/><circle cx='52' cy='28' r='3.8' fill='%23022b49'/></g></svg>" alt="avatar"/></div>
 <div id="chat-panel">
   <div class="chat-header">Asistente VICK - Soporte</div>
@@ -303,12 +305,11 @@ const chatBody = document.getElementById('chat-body'); function appendChat(msg, 
 
 function sendChat(){ const txt = document.getElementById('chatInput').value.trim(); if(!txt) return; appendChat(txt,'user'); document.getElementById('chatInput').value=''; handleChat(txt); }
 
-function handleChat(text){ const m = text.toLowerCase(); setTimeout(()=>{ if(m.includes('inventario')||m.includes('stock')){ appendChat(Object.keys(ciudades).map(c=>`${c}: ${ciudades[c].inventario}%`).join('
-')); }
+function handleChat(text){ const m = text.toLowerCase(); setTimeout(()=>{ if(m.includes('inventario')||m.includes('stock')){ appendChat(Object.keys(ciudades).map(c=>`${c}: ${ciudades[c].inventario}%`).join('\n')); }
 else if(m.includes('recomend')){ appendChat('Recomendación: Priorizar envío a Bogotá (+15%). Considere refuerzo a Medellín.'); }
 else if(m.includes('tendenc')||m.includes('gripe')||m.includes('tos')){ appendChat('Tendencias: Bogotá tiene aumento de gripe. Use campañas digitales localizadas.'); }
 else if(m.includes('mapa')){ appendChat('Mapa: muestra marcadores con estado de inventario por ciudad.'); }
-else{ appendChat('Lo siento, no entendí. Puedes preguntar: "Inventario Bogotá", "Recomendación" o "Tendencias Medellín".'); } }, 700);
+else{ appendChat('Lo siento, no entendí. Puedes preguntar: \"Inventario Bogotá\", \"Recomendación\" o \"Tendencias Medellín\".'); } }, 700);
 }
 
 // ---------- Monitoreo automatizado ----------
