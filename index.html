@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flujo de Datos de Vick</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f7f9fc; }
+        header { background: #0066cc; color: white; padding: 20px; text-align: center; }
+        nav { background: #004c99; padding: 10px; text-align: center; }
+        nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
+        .container { padding: 20px; }
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .alerta-alta { background: #ffcccc; padding: 10px; border-left: 5px solid red; }
+        .alerta-media { background: #fff0b3; padding: 10px; border-left: 5px solid orange; }
+        .alerta-baja { background: #e6ffcc; padding: 10px; border-left: 5px solid green; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>VICK DATAFLOW</h1>
+    <h3>Simulador del aplicativo de análisis de demanda e inventarios</h3>
+</header>
+
+<nav>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#inventarios">Inventarios</a>
+    <a href="#tendencias">Tendencias</a>
+    <a href="#recomendaciones">Recomendaciones</a>
+</nav>
+
+<div class="container">
+
+    <div id="dashboard" class="card">
+        <h2>Dashboard general</h2>
+        <p>Simulación de clima, búsquedas digitales y señales de alerta.</p>
+        <div class="alerta-alta">
+            <strong>Alerta Roja:</strong> Bogotá presenta aumento del 48% en búsquedas de “gripe”.
+        </div>
+        <div class="alerta-media">
+            <strong>Alerta Amarilla:</strong> Medellín registra inventarios a la baja.
+        </div>
+        <div class="alerta-baja">
+            <strong>Alerta Verde:</strong> Cali se mantiene estable sin picos de demanda.
+        </div>
+    </div>
+
+    <div id="inventarios" class="card">
+        <h2>Inventarios por ciudad</h2>
+        <ul>
+            <li>Bogotá: 22% stock disponible (riesgo)</li>
+            <li>Medellín: 41% stock disponible (moderado)</li>
+            <li>Cali: 78% stock disponible (estable)</li>
+        </ul>
+    </div>
+
+    <div id="tendencias" class="card">
+        <h2>Tendencias digitales</h2>
+        <p>Últimos 7 días:</p>
+        <ul>
+            <li>Gripe +48% en Bogotá</li>
+            <li>Tos +33% en Medellín</li>
+            <li>Resfriado -12% en Cali</li>
+        </ul>
+    </div>
+
+    <div id="recomendaciones" class="card">
+        <h2>Recomendaciones automáticas</h2>
+        <ul>
+            <li>Enviar 300 unidades adicionales a Bogotá.</li>
+            <li>Reforzar distribución a Medellín en 72 horas.</li>
+            <li>Iniciar campaña preventiva en Cali sobre síntomas iniciales.</li>
+        </ul>
+    </div>
+
+</div>
+
+</body>
+</html>
