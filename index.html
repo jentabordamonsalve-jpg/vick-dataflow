@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>VICK DATAFLOW - Optimizado</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -177,10 +177,93 @@ function actualizarAlertas(){const cont=document.getElementById('alertas');cont.
 function actualizarRecomendaciones(){const cont=document.getElementById('reco');cont.innerHTML='';Object.keys(ciudades).forEach(c=>{const d=ciudades[c];const div=document.createElement('div');div.className='message bot';const texto=d.inventario<30?'Enviar unidades urgentes a '+c:d.inventario<50?'Refuerzo moderado en '+c:c+' con abastecimiento OK';div.innerText=texto;cont.appendChild(div)})}
 actualizarAlertas();actualizarRecomendaciones()
 
-/* leaflet + histórico init after DOM */
-document.addEventListener('DOMContentLoaded',()=>{if(document.getElementById('map')){const map=L.map('map',{zoomControl:true,scrollWheelZoom:false}).setView([4.6,-74.08],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);const cityCoords={'Bogotá':[4.7110,-74.0721],'Medellín':[6.2442,-75.5812],'Cali':[3.4516,-76.5320]};Object.keys(ciudades).forEach(c=>{const inv=ciudades[c].inventario??0;const color=inv<30?'#ff4d4f':inv<50?'#ffb84d':'#34d399';const marker=L.circleMarker(cityCoords[c],{radius:10,color,fillColor:color,fillOpacity:.7}).addTo(map);marker.bindPopup(`<strong>${c}</strong><br>Inventario: ${inv}%`)})}
-const historicoCard=document.getElementById('historico');if(historicoCard&&!document.getElementById('monthSelect')){const wrapper=document.createElement('div');wrapper.style.display='flex';wrapper.style.gap='12px';wrapper.style.alignItems='center';wrapper.style.marginBottom='10px';const label=document.createElement('label');label.setAttribute('for','monthSelect');label.innerText='Seleccione mes:';const select=document.createElement('select');select.id='monthSelect';select.style.padding='8px';select.style.borderRadius='6px';select.style.border='1px solid #ddd';const months=['Enero','Febrero','Marzo','Abr','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];months.forEach((m,i)=>{const opt=document.createElement('option');opt.value=i;opt.innerText=m;if(i===3)opt.selected=true;select.appendChild(opt)});wrapper.appendChild(label);wrapper.appendChild(select);const firstChild=historicoCard.querySelector('.chart-container');historicoCard.insertBefore(wrapper,firstChild)}
-const monthsData={0:[1200,1300,1100,1400],1:[1100,1150,1300,1250],2:[1250,1400,1350,1500],3:[1400,1500,1450,1600],4:[1300,1350,1420,1500],5:[1200,1300,1280,1350],6:[1500,1600,1550,1700],7:[1400,1420,1380,1450],8:[1300,1280,1250,1320],9:[1600,1700,1650,1800],10:[1500,1550,1520,1600],11:[1700,1800,1750,1900]};const sel=document.getElementById('monthSelect');if(sel&&typeof historicoChart!=='undefined'){sel.addEventListener('change',e=>{const v=Number(e.target.value);historicoChart.data.datasets[0].data=monthsData[v]??monthsData[3];historicoChart.update();const notif=document.getElementById('notification');if(notif){notif.innerText='Histórico actualizado';notif.style.display='block';notif.style.opacity='1';setTimeout(()=>{notif.style.opacity='0';notif.style.display='none'},2000)}});sel.dispatchEvent(new Event('change'))}else if(!sel&&typeof historicoChart!=='undefined'){historicoChart.data.datasets[0].data=monthsData[3];historicoChart.update()}});
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  if (document.getElementById('map')) {
+    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false })
+      .setView([4.6, -74.08], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const cityCoords = {
+      'Bogotá': [4.7110, -74.0721],
+      'Medellín': [6.2442, -75.5812],
+      'Cali': [3.4516, -76.5320]
+    };
+
+    Object.keys(ciudades).forEach(c => {
+      const inv = ciudades[c].inventario ?? 0;
+      const color = inv < 30 ? '#ff4d4f' : inv < 50 ? '#ffb84d' : '#34d399';
+      const marker = L.circleMarker(cityCoords[c], {
+        radius: 10,
+        color,
+        fillColor: color,
+        fillOpacity: .7
+      }).addTo(map);
+
+      marker.bindPopup(`<strong>${c}</strong><br>Inventario: ${inv}%`);
+    });
+  }
+
+  const historicoCard = document.getElementById('historico');
+  if (historicoCard && !document.getElementById('monthSelect')) {
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex';
+    wrapper.style.gap = '12px';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.marginBottom = '10px';
+
+    const label = document.createElement('label');
+    label.innerText = 'Seleccione mes:';
+
+    const select = document.createElement('select');
+    select.id = 'monthSelect';
+    select.style.padding = '8px';
+    select.style.borderRadius = '6px';
+    select.style.border = '1px solid #ddd';
+
+    const months = ['Enero','Febrero','Marzo','Abr','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    months.forEach((m, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.innerText = m;
+      if (i === 3) opt.selected = true;
+      select.appendChild(opt);
+    });
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(select);
+
+    const firstChild = historicoCard.querySelector('.chart-container');
+    historicoCard.insertBefore(wrapper, firstChild);
+  }
+
+  const monthsData = {
+    0:[1200,1300,1100,1400],1:[1100,1150,1300,1250],2:[1250,1400,1350,1500],
+    3:[1400,1500,1450,1600],4:[1300,1350,1420,1500],5:[1200,1300,1280,1350],
+    6:[1500,1600,1550,1700],7:[1400,1420,1380,1450],8:[1300,1280,1250,1320],
+    9:[1600,1700,1650,1800],10:[1500,1550,1520,1600],11:[1700,1800,1750,1900]
+  };
+
+  const sel = document.getElementById('monthSelect');
+
+  if (sel && typeof historicoChart !== 'undefined') {
+    sel.addEventListener('change', e => {
+      const v = Number(e.target.value);
+      historicoChart.data.datasets[0].data = monthsData[v] ?? monthsData[3];
+      historicoChart.update();
+    });
+
+    sel.dispatchEvent(new Event('change'));
+  }
+
+});
+</script>
 
 /* export PDF */
 document.getElementById('exportPdfBtn').addEventListener('click',async()=>{mostrarNotificacion('Generando PDF...');const content=document.querySelector('.content');const canvas=await html2canvas(content,{scale:1.6});const imgData=canvas.toDataURL('image/png');const { jsPDF }=window.jspdf||{};const pdf=new (jsPDF||window.jspdf?.jsPDF)('l','pt','a4');const pdfWidth=pdf.internal.pageSize.getWidth();const pdfHeight=(canvas.height*pdfWidth)/canvas.width;pdf.addImage(imgData,'PNG',0,0,pdfWidth,pdfHeight);pdf.save('reporte_vick_dataflow.pdf')});
