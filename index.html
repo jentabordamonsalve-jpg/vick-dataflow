@@ -3,12 +3,15 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>VICK DATAFLOW - Optimizado</title>
+<title>VICK DATAFLOW - Final</title>
+
+<!-- Dependencias -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 :root{--vick-blue:#004c97;--vick-light:#1a73e8;--vick-green:#009e60;--bg:#f3f8fc;--card:#fff;--text:#12202b;--muted:#667085}
 :root.dark{--vick-blue:#05223a;--vick-light:#0b2b4a;--vick-green:#13b76a;--bg:#0f1720;--card:#0b1220;--text:#e6eef6;--muted:#9fb0c6}
@@ -17,18 +20,21 @@
 .sidebar h2{text-align:center;margin:0 0 12px;font-size:20px;padding-bottom:6px}.sidebar a{display:block;padding:12px 18px;color:white;text-decoration:none;font-weight:700;border-bottom:1px solid rgba(255,255,255,.06)}.sidebar a:hover{background:var(--vick-light)}
 .content{margin-left:290px;padding:22px;max-width:1200px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}.header .actions{display:flex;gap:8px;align-items:center}
 .btn{background:var(--vick-light);color:#fff;padding:10px 12px;border-radius:8px;border:none;font-weight:700;cursor:pointer}.btn.secondary{background:transparent;border:2px solid var(--vick-blue);color:var(--vick-blue)}
-.card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 10px 30px rgba(12,35,70,.06)}.chart-container{height:320px}.row{display:grid;grid-template-columns:1fr 380px;gap:18px;margin-bottom:18px}#map{height:360px;border-radius:10px}
+.card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 10px 30px rgba(12,35,70,.06)}.chart-container{height:320px}.row{display:grid;grid-template-columns:1fr 380px;gap:18px;margin-bottom:18px}
+#map{height:380px;border-radius:12px}
 #avatar-btn{position:fixed;right:24px;bottom:24px;width:86px;height:86px;border-radius:50%;background:var(--vick-green);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(0,0,0,.18);cursor:pointer;z-index:1400}
 #avatar-btn img{width:78px;height:78px;border-radius:50%;object-fit:cover;display:block}
 #chat-panel{position:fixed;right:24px;bottom:120px;width:360px;height:520px;background:var(--card);border-radius:12px;box-shadow:0 20px 60px rgba(2,22,50,.2);display:none;flex-direction:column;z-index:1400}
 .chat-header{background:var(--vick-blue);color:#fff;padding:12px;border-radius:12px 12px 0 0;font-weight:700}.chat-body{flex:1;overflow:auto;padding:12px}.chat-input{display:flex;padding:12px;border-top:1px solid rgba(0,0,0,.06)}.chat-input input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}.chat-input button{margin-left:8px;padding:10px 12px;border-radius:8px;border:none;background:var(--vick-green);color:#fff;font-weight:700}
-.message{margin-bottom:10px;padding:8px;border-radius:8px}.message.bot{background:#eefaf1}.message.user{background:#e8f1ff;text-align:right}
+.msg-bot{background:#eefaf1;margin-bottom:10px;padding:8px;border-radius:8px}
+.msg-user{background:#e8f1ff;margin-bottom:10px;padding:8px;border-radius:8px;text-align:right}
 .tooltip{position:relative;display:inline-block}.tooltip .tooltip-text{visibility:hidden;width:220px;background:var(--vick-blue);color:#fff;text-align:center;padding:6px;border-radius:6px;position:absolute;z-index:10;bottom:125%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .2s}.tooltip:hover .tooltip-text{visibility:visible;opacity:1}
 .notification{position:fixed;top:20px;right:20px;background:var(--vick-light);color:#fff;padding:12px 16px;border-radius:8px;display:none;z-index:1500}.small{font-size:13px;color:var(--muted)}.demanda-buttons,.inventario-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 @media(max-width:1000px){.sidebar{display:none}.content{margin:12px}.row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+
 <div class="sidebar">
   <h2>VICK DATAFLOW</h2>
   <a href="#dashboard">Dashboard</a>
@@ -95,12 +101,10 @@
     </div>
   </div>
 
-<div id="mapa" class="card">
-  <h3>Mapa interactivo de inventarios</h3>
-
-  <div id="map" style="height:380px;width:100%;border-radius:12px;"></div>
-</div>
-
+  <div id="mapa" class="card">
+    <h3>Mapa interactivo de inventarios</h3>
+    <div id="map"></div>
+  </div>
 
   <div id="historico" class="card">
     <h3>Histórico mensual</h3>
@@ -125,14 +129,14 @@
   </div>
 </div>
 
-<div id="avatar-btn" title="Asistente VICK">
-    <img src="Vicky.png" alt="Mamá Vicky" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+<div id="avatar-btn" title="Asistente Mamá Vicky">
+  <img src="Vicky.png" alt="Mamá Vicky" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22%3E%3Ccircle cx=%2260%22 cy=%2260%22 r=%2260%22 fill=%23009e60/%3E%3Cg transform=%22translate(16,16)%22%3E%3Ccircle cx=%2244%22 cy=%2230%22 r=%2222%22 fill=%23fff/%3E%3Cpath d=%22M44 64c-18 0-32 8-32 18v4h64v-4c0-10-14-18-32-18z%22 fill=%23f1f5fb/%3E%3Ccircle cx=%2236%22 cy=%2228%22 r=%223.8%22 fill=%23022b49/%3E%3Ccircle cx=%2252%22 cy=%2228%22 r=%223.8%22 fill=%23022b49/%3E%3C/g%3E%3C/svg%3E';" style="width:78px;height:78px;border-radius:50%;object-fit:cover;">
 </div>
 
 <div id="chat-panel">
   <div class="chat-header">Mamá Vicky - Asistente Vick</div>
   <div id="chat-body" class="chat-body">
-    <div class="message bot">Hola 👋 Soy <b>Mamá Vicky</b>, tu asistente Vick. Puedo ayudar con inventarios, tendencias y recomendaciones.</div>
+    <div class="msg-bot">Hola 👋 Soy <b>Mamá Vicky</b>, tu asistente Vick. Puedo ayudar con inventarios, tendencias y recomendaciones.</div>
   </div>
   <div class="chat-input">
     <input id="chatInput" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter') sendChat()" />
@@ -143,106 +147,156 @@
 <div id="notification" class="notification"></div>
 
 <script>
-const ciudades={Bogotá:{gripe:48,tos:32,frio:60,inventario:22,ventasSemana:4200},Medellín:{gripe:27,tos:33,frio:45,inventario:41,ventasSemana:2850},Cali:{gripe:-12,tos:5,frio:15,inventario:78,ventasSemana:3100}};
-function getColor(n){return getComputedStyle(document.documentElement).getPropertyValue(n)||'#1a73e8'}
-function mostrarNotificacion(t){const n=document.getElementById('notification');n.innerText=t;n.style.display='block';n.style.opacity='1';setTimeout(()=>{n.style.opacity='0';n.style.display='none'},2500)}
+// =================== Config / Datos ===================
+const ciudades = {
+  "Bogotá": { gripe: 48, tos: 32, frio: 60, inventario: 22, ventasSemana: 4200 },
+  "Medellín": { gripe: 27, tos: 33, frio: 45, inventario: 41, ventasSemana: 2850 },
+  "Cali": { gripe: -12, tos: 5, frio: 15, inventario: 78, ventasSemana: 3100 }
+};
 
-/* charts */
-const demandaCtx=document.getElementById('demandaChart').getContext('2d');
-const demandaChart=new Chart(demandaCtx,{type:'line',data:{labels:['Lun','Mar','Mie','Jue','Vie','Sab'],datasets:[{label:'Demanda real (últimos 6 días)',data:[2000,2500,4000,6000,5500,7000],borderColor:getColor('--vick-light'),backgroundColor:'rgba(26,115,232,0.08)',fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false}});
-const predCtx=document.getElementById('prediccionChart').getContext('2d');
-const predChart=new Chart(predCtx,{type:'line',data:{labels:['Hoy','+1d','+2d','+3d','+4d','+5d'],datasets:[{label:'Proyección IA',data:[7200,8200,9200,11000,13500,15000],borderColor:getColor('--vick-green'),tension:0.3}]},options:{responsive:true,maintainAspectRatio:false}});
-const inventarioCtx=document.getElementById('inventarioChart').getContext('2d');
-let inventarioChart=new Chart(inventarioCtx,{type:'bar',data:{labels:['Bogotá','Medellín','Cali'],datasets:[{label:'Inventario %',data:[22,41,78],backgroundColor:['#ff6b6b','#ffb84d','#6fdc6f']}]},options:{responsive:true,maintainAspectRatio:false}});
-const tendenciasCtx=document.getElementById('tendenciasChart').getContext('2d');
-let tendenciasChart=new Chart(tendenciasCtx,{type:'bar',data:{labels:['Gripe','Tos','Clima frío'],datasets:[{label:'Tendencia (7d)',data:[48,32,60],backgroundColor:getColor('--vick-light')}]},options:{responsive:true,maintainAspectRatio:false}});
-const historicoCtx=document.getElementById('historicoChart').getContext('2d');
-let historicoChart=new Chart(historicoCtx,{type:'line',data:{labels:['Semana 1','Semana 2','Semana 3','Semana 4'],datasets:[{label:'Ventas (unidades)',data:[1200,1400,1300,1500],borderColor:getColor('--vick-light'),tension:0.3}]},options:{responsive:true,maintainAspectRatio:false}});
+function getColor(varName){ return getComputedStyle(document.documentElement).getPropertyValue(varName) || '#1a73e8'; }
+function mostrarNotificacion(texto){ const n=document.getElementById('notification'); n.innerText=texto; n.style.display='block'; n.style.opacity='1'; setTimeout(()=>{ n.style.opacity='0'; n.style.display='none'; }, 2500); }
 
-/* demanda modes */
-let demandaMode='real';
-const demandaReal=[2000,2500,4000,6000,5500,7000],demandaIA=[7200,8200,9200,11000,13500,15000],demandaTendencias=[48,32,60,55,50,68],demandaClima=[15,20,40,60,55,70];
-const demandaMixta=demandaReal.map((v,i)=>Math.round(v*0.5+demandaTendencias[i]*50+demandaClima[i]*20));
-function setDemandaMode(m){demandaMode=m;let label,data,color=getColor('--vick-light');if(m==='real'){label='Demanda real (últimos 6 días)';data=demandaReal;color=getColor('--vick-light')}else if(m==='ia'){label='Proyección IA (próximos días)';data=demandaIA;color=getColor('--vick-green')}else if(m==='tendencias'){label='Tendencias (gripe/tos)';data=demandaTendencias;color='#6f42c1'}else if(m==='clima'){label='Clima frío (impacto)';data=demandaClima;color='#ffb84d'}else if(m==='mixta'){label='Demanda compuesta IA';data=demandaMixta;color='#009e60'}else if(m==='ambas'){demandaChart.data.datasets=[{label:'Demanda real',data:demandaReal,borderColor:getColor('--vick-light'),backgroundColor:'rgba(26,115,232,0.06)',fill:true,tension:0.3},{label:'Proyección IA',data:demandaIA,borderColor:getColor('--vick-green'),backgroundColor:'rgba(0,158,96,0.06)',fill:false,tension:0.3}];demandaChart.update();mostrarNotificacion('Mostrando demanda real + proyección IA');return}demandaChart.data.datasets=[{label:label,data:data,borderColor:color,backgroundColor:color,fill:true,tension:0.3}];demandaChart.update();mostrarNotificacion('Vista: '+label)}
+// =================== Charts ===================
+const demandaCtx = document.getElementById('demandaChart').getContext('2d');
+const demandaChart = new Chart(demandaCtx, {
+  type:'line',
+  data:{ labels:['Lun','Mar','Mie','Jue','Vie','Sab'], datasets:[{ label:'Demanda real (últimos 6 días)', data:[2000,2500,4000,6000,5500,7000], borderColor:getColor('--vick-light'), backgroundColor:'rgba(26,115,232,0.08)', fill:true, tension:0.3 }] },
+  options:{ responsive:true, maintainAspectRatio:false }
+});
 
-/* inventarios */
-let inventarioMode='porcentaje';
-const inventariosUnidades={Bogotá:450,Medellín:620,Cali:1150},riesgo={Bogotá:9,Medellín:5,Cali:2};
-function setInventarioMode(mode){inventarioMode=mode;let newData,newLabel,newColors;if(mode==='porcentaje'){newData=[22,41,78];newLabel='Inventario %';newColors=['#ff6b6b','#ffb84d','#6fdc6f']}else if(mode==='unidades'){newData=[inventariosUnidades['Bogotá'],inventariosUnidades['Medellín'],inventariosUnidades['Cali']];newLabel='Unidades disponibles';newColors=['#1a73e8','#1a73e8','#1a73e8']}else if(mode==='riesgo'){newData=[riesgo['Bogotá'],riesgo['Medellín'],riesgo['Cali']];newLabel='Nivel de riesgo (1–10)';newColors=['#ff2d2d','#ff9f1c','#34d399']}inventarioChart.data.labels=['Bogotá','Medellín','Cali'];inventarioChart.data.datasets[0].data=newData;inventarioChart.data.datasets[0].label=newLabel;inventarioChart.data.datasets[0].backgroundColor=newColors;inventarioChart.update()}
-function filtrarCiudad(ciudad){const labels=[ciudad];let data=[];if(inventarioMode==='porcentaje')data=[{'Bogotá':22,'Medellín':41,'Cali':78}[ciudad]];else if(inventarioMode==='unidades')data=[inventariosUnidades[ciudad]];else data=[riesgo[ciudad]];inventarioChart.data.labels=labels;inventarioChart.data.datasets[0].data=data;inventarioChart.update()}
-function resetInventarios(){inventarioChart.data.labels=['Bogotá','Medellín','Cali'];setInventarioMode(inventarioMode)}
+const predCtx = document.getElementById('prediccionChart').getContext('2d');
+const predChart = new Chart(predCtx, {
+  type:'line',
+  data:{ labels:['Hoy','+1d','+2d','+3d','+4d','+5d'], datasets:[{ label:'Proyección IA', data:[7200,8200,9200,11000,13500,15000], borderColor:getColor('--vick-green'), tension:0.3 }] },
+  options:{ responsive:true, maintainAspectRatio:false }
+});
 
-/* alertas/recomendaciones */
-function actualizarAlertas(){const cont=document.getElementById('alertas');cont.innerHTML='';Object.keys(ciudades).forEach(c=>{const d=ciudades[c];const div=document.createElement('div');div.className='message bot tooltip';div.innerText=c+': Gripe '+d.gripe+'% — Inventario '+d.inventario+'%';const tip=document.createElement('span');tip.className='tooltip-text';tip.innerText='Alerta automática según tendencias y stock.';div.appendChild(tip);cont.appendChild(div)})}
-function actualizarRecomendaciones(){const cont=document.getElementById('reco');cont.innerHTML='';Object.keys(ciudades).forEach(c=>{const d=ciudades[c];const div=document.createElement('div');div.className='message bot';const texto=d.inventario<30?'Enviar unidades urgentes a '+c:d.inventario<50?'Refuerzo moderado en '+c:c+' con abastecimiento OK';div.innerText=texto;cont.appendChild(div)})}
-actualizarAlertas();actualizarRecomendaciones()
+const inventarioCtx = document.getElementById('inventarioChart').getContext('2d');
+let inventarioChart = new Chart(inventarioCtx, {
+  type:'bar',
+  data:{ labels:['Bogotá','Medellín','Cali'], datasets:[{ label:'Inventario %', data:[22,41,78], backgroundColor:['#ff6b6b','#ffb84d','#6fdc6f'] }] },
+  options:{ responsive:true, maintainAspectRatio:false }
+});
 
-<script>
+const tendenciasCtx = document.getElementById('tendenciasChart').getContext('2d');
+let tendenciasChart = new Chart(tendenciasCtx, {
+  type:'bar',
+  data:{ labels:['Gripe','Tos','Clima frío'], datasets:[{ label:'Tendencia (7d)', data:[48,32,60], backgroundColor:getColor('--vick-light') }] },
+  options:{ responsive:true, maintainAspectRatio:false }
+});
+
+const historicoCtx = document.getElementById('historicoChart').getContext('2d');
+let historicoChart = new Chart(historicoCtx, {
+  type:'line',
+  data:{ labels:['Semana 1','Semana 2','Semana 3','Semana 4'], datasets:[{ label:'Ventas (unidades)', data:[1200,1400,1300,1500], borderColor:getColor('--vick-light'), tension:0.3 }] },
+  options:{ responsive:true, maintainAspectRatio:false }
+});
+
+// =================== Demand modes ===================
+let demandaMode = 'real';
+const demandaReal = [2000,2500,4000,6000,5500,7000];
+const demandaIA = [7200,8200,9200,11000,13500,15000];
+const demandaTendencias = [48,32,60,55,50,68];
+const demandaClima = [15,20,40,60,55,70];
+const demandaMixta = demandaReal.map((v,i)=>Math.round(v*0.5 + (demandaTendencias[i]*50) + (demandaClima[i]*20)));
+
+function setDemandaMode(m){
+  demandaMode = m;
+  let label='', data=[], color=getColor('--vick-light');
+  if(m==='real'){ label='Demanda real (últimos 6 días)'; data=demandaReal; color=getColor('--vick-light'); }
+  else if(m==='ia'){ label='Proyección IA (próximos días)'; data=demandaIA; color=getColor('--vick-green'); }
+  else if(m==='tendencias'){ label='Tendencias (gripe/tos)'; data=demandaTendencias; color='#6f42c1'; }
+  else if(m==='clima'){ label='Clima frío (impacto)'; data=demandaClima; color='#ffb84d'; }
+  else if(m==='mixta'){ label='Demanda compuesta IA'; data=demandaMixta; color='#009e60'; }
+  else if(m==='ambas'){
+    demandaChart.data.datasets = [
+      { label:'Demanda real', data:demandaReal, borderColor:getColor('--vick-light'), backgroundColor:'rgba(26,115,232,0.06)', fill:true, tension:0.3 },
+      { label:'Proyección IA', data:demandaIA, borderColor:getColor('--vick-green'), backgroundColor:'rgba(0,158,96,0.06)', fill:false, tension:0.3 }
+    ];
+    demandaChart.update();
+    mostrarNotificacion('Mostrando demanda real + proyección IA');
+    return;
+  }
+  demandaChart.data.datasets = [{ label, data, borderColor:color, backgroundColor:color, fill:true, tension:0.3 }];
+  demandaChart.update();
+  mostrarNotificacion('Vista: '+label);
+}
+
+// =================== Inventarios ===================
+let inventarioMode = 'porcentaje';
+const inventariosUnidades = { 'Bogotá':450, 'Medellín':620, 'Cali':1150 };
+const riesgo = { 'Bogotá':9, 'Medellín':5, 'Cali':2 };
+
+function setInventarioMode(mode){
+  inventarioMode = mode;
+  let newData = [], newLabel = '', newColors = [];
+  if(mode==='porcentaje'){ newData=[22,41,78]; newLabel='Inventario %'; newColors=['#ff6b6b','#ffb84d','#6fdc6f']; }
+  else if(mode==='unidades'){ newData=[inventariosUnidades['Bogotá'],inventariosUnidades['Medellín'],inventariosUnidades['Cali']]; newLabel='Unidades disponibles'; newColors=['#1a73e8','#1a73e8','#1a73e8']; }
+  else if(mode==='riesgo'){ newData=[riesgo['Bogotá'],riesgo['Medellín'],riesgo['Cali']]; newLabel='Nivel de riesgo (1–10)'; newColors=['#ff2d2d','#ff9f1c','#34d399']; }
+  inventarioChart.data.labels=['Bogotá','Medellín','Cali'];
+  inventarioChart.data.datasets[0].data=newData;
+  inventarioChart.data.datasets[0].label=newLabel;
+  inventarioChart.data.datasets[0].backgroundColor=newColors;
+  inventarioChart.update();
+}
+
+function filtrarCiudad(ciudad){
+  let labels=[ciudad], data=[];
+  if(inventarioMode==='porcentaje') data=[{'Bogotá':22,'Medellín':41,'Cali':78}[ciudad]];
+  else if(inventarioMode==='unidades') data=[inventariosUnidades[ciudad]];
+  else data=[riesgo[ciudad]];
+  inventarioChart.data.labels = labels;
+  inventarioChart.data.datasets[0].data = data;
+  inventarioChart.update();
+}
+function resetInventarios(){ inventarioChart.data.labels=['Bogotá','Medellín','Cali']; setInventarioMode(inventarioMode); }
+
+// =================== Alertas / Recomendaciones ===================
+function actualizarAlertas(){
+  const cont = document.getElementById('alertas');
+  if(!cont) return;
+  cont.innerHTML = '';
+  Object.keys(ciudades).forEach(c=>{
+    const d = ciudades[c];
+    const div = document.createElement('div'); div.className='msg-bot tooltip';
+    div.innerText = `${c}: Gripe ${d.gripe}% — Inventario ${d.inventario}%`;
+    const tip = document.createElement('span'); tip.className='tooltip-text'; tip.innerText='Alerta automática según tendencias y stock.';
+    div.appendChild(tip);
+    cont.appendChild(div);
+  });
+}
+function actualizarRecomendaciones(){
+  const cont = document.getElementById('reco');
+  if(!cont) return;
+  cont.innerHTML = '';
+  Object.keys(ciudades).forEach(c=>{
+    const d = ciudades[c];
+    const div = document.createElement('div'); div.className='msg-bot';
+    const texto = d.inventario<30 ? `Enviar unidades urgentes a ${c}` : d.inventario<50 ? `Refuerzo moderado en ${c}` : `${c} con abastecimiento OK`;
+    div.innerText = texto; cont.appendChild(div);
+  });
+}
+actualizarAlertas(); actualizarRecomendaciones();
+
+// =================== Map + Histórico (DOM ready) ===================
 document.addEventListener('DOMContentLoaded', () => {
 
+  // Leaflet map
   if (document.getElementById('map')) {
-    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false })
-      .setView([4.6, -74.08], 6);
+    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([4.6, -74.08], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    const cityCoords = {
-      'Bogotá': [4.7110, -74.0721],
-      'Medellín': [6.2442, -75.5812],
-      'Cali': [3.4516, -76.5320]
-    };
-
-    Object.keys(ciudades).forEach(c => {
+    const cityCoords = { 'Bogotá':[4.7110,-74.0721], 'Medellín':[6.2442,-75.5812], 'Cali':[3.4516,-76.5320] };
+    Object.keys(ciudades).forEach(c=>{
       const inv = ciudades[c].inventario ?? 0;
-      const color = inv < 30 ? '#ff4d4f' : inv < 50 ? '#ffb84d' : '#34d399';
-      const marker = L.circleMarker(cityCoords[c], {
-        radius: 10,
-        color,
-        fillColor: color,
-        fillOpacity: .7
-      }).addTo(map);
-
+      const color = inv<30 ? '#ff4d4f' : inv<50 ? '#ffb84d' : '#34d399';
+      const marker = L.circleMarker(cityCoords[c], { radius:12, color, fillColor:color, fillOpacity:0.7 }).addTo(map);
       marker.bindPopup(`<strong>${c}</strong><br>Inventario: ${inv}%`);
     });
   }
 
-  const historicoCard = document.getElementById('historico');
-  if (historicoCard && !document.getElementById('monthSelect')) {
-    const wrapper = document.createElement('div');
-    wrapper.style.display = 'flex';
-    wrapper.style.gap = '12px';
-    wrapper.style.alignItems = 'center';
-    wrapper.style.marginBottom = '10px';
-
-    const label = document.createElement('label');
-    label.innerText = 'Seleccione mes:';
-
-    const select = document.createElement('select');
-    select.id = 'monthSelect';
-    select.style.padding = '8px';
-    select.style.borderRadius = '6px';
-    select.style.border = '1px solid #ddd';
-
-    const months = ['Enero','Febrero','Marzo','Abr','Mayo','Junio',
-                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
-    months.forEach((m, i) => {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.innerText = m;
-      if (i === 3) opt.selected = true;
-      select.appendChild(opt);
-    });
-
-    wrapper.appendChild(label);
-    wrapper.appendChild(select);
-
-    const firstChild = historicoCard.querySelector('.chart-container');
-    historicoCard.insertBefore(wrapper, firstChild);
-  }
-
+  // Histórico: month select already in HTML; update chart when changes
   const monthsData = {
     0:[1200,1300,1100,1400],1:[1100,1150,1300,1250],2:[1250,1400,1350,1500],
     3:[1400,1500,1450,1600],4:[1300,1350,1420,1500],5:[1200,1300,1280,1350],
@@ -251,40 +305,78 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const sel = document.getElementById('monthSelect');
-
-  if (sel && typeof historicoChart !== 'undefined') {
-    sel.addEventListener('change', e => {
+  if(sel && typeof historicoChart !== 'undefined'){
+    sel.addEventListener('change', e=>{
       const v = Number(e.target.value);
       historicoChart.data.datasets[0].data = monthsData[v] ?? monthsData[3];
       historicoChart.update();
+      mostrarNotificacion('Histórico actualizado');
     });
-
     sel.dispatchEvent(new Event('change'));
+  } else if(typeof historicoChart !== 'undefined'){
+    historicoChart.data.datasets[0].data = monthsData[3];
+    historicoChart.update();
   }
 
 });
-</script>
 
-/* export PDF */
-document.getElementById('exportPdfBtn').addEventListener('click',async()=>{mostrarNotificacion('Generando PDF...');const content=document.querySelector('.content');const canvas=await html2canvas(content,{scale:1.6});const imgData=canvas.toDataURL('image/png');const { jsPDF }=window.jspdf||{};const pdf=new (jsPDF||window.jspdf?.jsPDF)('l','pt','a4');const pdfWidth=pdf.internal.pageSize.getWidth();const pdfHeight=(canvas.height*pdfWidth)/canvas.width;pdf.addImage(imgData,'PNG',0,0,pdfWidth,pdfHeight);pdf.save('reporte_vick_dataflow.pdf')});
+// =================== Export PDF ===================
+document.getElementById('exportPdfBtn').addEventListener('click', async ()=>{
+  mostrarNotificacion('Generando PDF...');
+  const content = document.querySelector('.content');
+  const canvas = await html2canvas(content, { scale: 1.6 });
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf || {};
+  const pdf = new (jsPDF || window.jspdf?.jsPDF)('l','pt','a4');
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  pdf.save('reporte_vick_dataflow.pdf');
+});
 
-/* modo oscuro */
-document.getElementById('darkModeBtn').addEventListener('click',()=>{document.documentElement.classList.toggle('dark');setTimeout(()=>{if(demandaChart&&demandaChart.data&&demandaChart.data.datasets)demandaChart.data.datasets.forEach(ds=>{ds.borderColor=getColor('--vick-light');if(!ds.backgroundColor)ds.backgroundColor=getColor('--vick-light')});demandaChart.update();tendenciasChart.data.datasets[0].backgroundColor=getColor('--vick-light');tendenciasChart.update();predChart.data.datasets[0].borderColor=getColor('--vick-green');predChart.update();historicoChart.data.datasets[0].borderColor=getColor('--vick-light');historicoChart.update();inventarioChart.update()},250)});
+// =================== Dark mode ===================
+document.getElementById('darkModeBtn').addEventListener('click', ()=>{
+  document.documentElement.classList.toggle('dark');
+  setTimeout(()=>{
+    try{
+      if(demandaChart?.data?.datasets) demandaChart.data.datasets.forEach(ds=>{ ds.borderColor = getColor('--vick-light'); if(!ds.backgroundColor) ds.backgroundColor = getColor('--vick-light'); });
+      demandaChart.update();
+      tendenciasChart.data.datasets[0].backgroundColor = getColor('--vick-light'); tendenciasChart.update();
+      predChart.data.datasets[0].borderColor = getColor('--vick-green'); predChart.update();
+      historicoChart.data.datasets[0].borderColor = getColor('--vick-light'); historicoChart.update();
+      inventarioChart.update();
+    }catch(e){}
+  },250);
+});
 
-/* chatbot */
-const avatarBtn=document.getElementById('avatar-btn'),chatPanel=document.getElementById('chat-panel'),chatBody=document.getElementById('chat-body');
-avatarBtn.addEventListener('click',()=>{chatPanel.style.display=chatPanel.style.display==='flex'?'none':'flex';mostrarNotificacion('Asistente Mamá Vicky activado')});
-function appendChat(msg,who='bot'){const d=document.createElement('div');d.className='message '+(who==='bot'?'bot':'user');d.innerText=msg;chatBody.appendChild(d);chatBody.scrollTop=chatBody.scrollHeight}
-function sendChat(){const txt=document.getElementById('chatInput').value.trim();if(!txt)return;appendChat(txt,'user');document.getElementById('chatInput').value='';handleChat(txt)}
-function handleChat(text){const m=text.toLowerCase();setTimeout(()=>{if(m.includes('inventario')||m.includes('stock'))appendChat(Object.keys(ciudades).map(c=>`${c}: ${ciudades[c].inventario}%`).join('\n'));else if(m.includes('recomend'))appendChat('Mamá Vicky: Recomendación - Priorizar envío a Bogotá (+15%). Considerar refuerzo a Medellín.');else if(m.includes('tendenc')||m.includes('gripe')||m.includes('tos'))appendChat('Mamá Vicky: Tendencias - Bogotá con aumento de búsquedas de gripe. Campañas locales recomendadas.');else if(m.includes('mapa'))appendChat('Mamá Vicky: El mapa muestra marcadores con el estado de inventario por ciudad.');else appendChat('Mamá Vicky: Lo siento, no entendí. Pregunta: \"Inventario Bogotá\", \"Recomendación\" o \"Tendencias Medellín\".')},700)}
+// =================== Chatbot (Mamá Vicky) ===================
+const avatarBtn = document.getElementById('avatar-btn'), chatPanel = document.getElementById('chat-panel'), chatBody = document.getElementById('chat-body');
+avatarBtn.addEventListener('click', ()=>{ chatPanel.style.display = chatPanel.style.display === 'flex' ? 'none' : 'flex'; mostrarNotificacion('Asistente Mamá Vicky activado'); });
 
-/* monitoreo */
-setInterval(()=>{if(ciudades['Bogotá'].inventario<30)mostrarNotificacion('⚠️ Inventario crítico en Bogotá - revisar envío')},10000);
+function appendChat(msg, who='bot'){
+  const d = document.createElement('div'); d.className = who==='bot' ? 'msg-bot' : 'msg-user'; d.innerText = msg; chatBody.appendChild(d); chatBody.scrollTop = chatBody.scrollHeight;
+}
+function sendChat(){ const txt = document.getElementById('chatInput').value.trim(); if(!txt) return; appendChat(txt,'user'); document.getElementById('chatInput').value=''; handleChat(txt); }
 
-/* inicial */
+function handleChat(text){
+  const m = text.toLowerCase();
+  setTimeout(()=>{
+    if(m.includes('inventario')||m.includes('stock')) appendChat(Object.keys(ciudades).map(c=>`${c}: ${ciudades[c].inventario}%`).join('\n'));
+    else if(m.includes('recomend')) appendChat('Mamá Vicky: Recomendación - Priorizar envío a Bogotá (+15%). Considerar refuerzo a Medellín.');
+    else if(m.includes('tendenc')||m.includes('gripe')||m.includes('tos')) appendChat('Mamá Vicky: Tendencias - Bogotá con aumento de búsquedas de gripe. Campañas locales recomendadas.');
+    else if(m.includes('mapa')) appendChat('Mamá Vicky: El mapa muestra marcadores con el estado de inventario por ciudad.');
+    else appendChat('Mamá Vicky: Lo siento, no entendí. Pregunta: "Inventario Bogotá", "Recomendación" o "Tendencias Medellín".');
+  },600);
+}
+
+// =================== Monitoreo automático ===================
+setInterval(()=>{ if(ciudades['Bogotá'].inventario < 30) mostrarNotificacion('⚠️ Inventario crítico en Bogotá - revisar envío'); }, 10000);
+
+// =================== Inicializaciones finales ===================
 mostrarNotificacion('VICK DATAFLOW cargado');
-setTimeout(()=>{actualizarAlertas();actualizarRecomendaciones()},300);
-setTimeout(()=>{if(typeof setDemandaMode==='function')setDemandaMode('real')},600);
+setTimeout(()=>{ actualizarAlertas(); actualizarRecomendaciones(); }, 300);
+setTimeout(()=>{ if(typeof setDemandaMode === 'function') setDemandaMode('real'); }, 600);
 </script>
+
 </body>
 </html>
