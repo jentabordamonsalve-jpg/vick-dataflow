@@ -3,84 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flujo de Datos de Vick</title>
+    <title>VICK DATAFLOW - Avanzado</title>
+
+    <!-- Librería de gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f7f9fc; }
-        header { background: #0066cc; color: white; padding: 20px; text-align: center; }
-        nav { background: #004c99; padding: 10px; text-align: center; }
-        nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
-        .container { padding: 20px; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f6fa;
+        }
+        .sidebar {
+            width: 260px;
+            background: #003d80;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .sidebar a:hover {
+            background: #0066cc;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+        }
         .card {
             background: white;
             padding: 20px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
-        .alerta-alta { background: #ffcccc; padding: 10px; border-left: 5px solid red; }
-        .alerta-media { background: #fff0b3; padding: 10px; border-left: 5px solid orange; }
-        .alerta-baja { background: #e6ffcc; padding: 10px; border-left: 5px solid green; }
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+        .alerta {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .roja { background: #ffd6d6; border-left: 6px solid red; }
+        .amarilla { background: #fff3cd; border-left: 6px solid orange; }
+        .verde { background: #d4edda; border-left: 6px solid green; }
+
+        .city-buttons button {
+            padding: 10px 20px;
+            border: none;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 6px;
+            background: #0066cc;
+            color: white;
+            font-weight: bold;
+        }
+        .city-buttons button:hover {
+            background: #004c99;
+        }
+        .map-box {
+            background: #e9eef5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <h1>VICK DATAFLOW</h1>
-    <h3>Simulador del aplicativo de análisis de demanda e inventarios</h3>
-</header>
+    <div class="sidebar">
+        <h2>VICK DATAFLOW</h2>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#inventarios">Inventarios</a>
+        <a href="#tendencias">Tendencias</a>
+        <a href="#recomendaciones">Recomendaciones</a>
+    </div>
 
-<nav>
-    <a href="#dashboard">Dashboard</a>
-    <a href="#inventarios">Inventarios</a>
-    <a href="#tendencias">Tendencias</a>
-    <a href="#recomendaciones">Recomendaciones</a>
-</nav>
+    <div class="content">
 
-<div class="container">
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="card">
+            <h2>Dashboard general</h2>
 
-    <div id="dashboard" class="card">
-        <h2>Dashboard general</h2>
-        <p>Simulación de clima, búsquedas digitales y señales de alerta.</p>
-        <div class="alerta-alta">
-            <strong>Alerta Roja:</strong> Bogotá presenta aumento del 48% en búsquedas de “gripe”.
+            <div class="chart-container">
+                <canvas id="demandaChart"></canvas>
+            </div>
+
+            <div id="alertas"></div>
         </div>
-        <div class="alerta-media">
-            <strong>Alerta Amarilla:</strong> Medellín registra inventarios a la baja.
+
+        <!-- INVENTARIOS -->
+        <div id="inventarios" class="card">
+            <h2>Inventarios por ciudad</h2>
+
+            <div class="chart-container">
+                <canvas id="inventarioChart"></canvas>
+            </div>
+
+            <div class="map-box">
+                Mapa simulación: Bogotá, Medellín, Cali activas
+            </div>
         </div>
-        <div class="alerta-baja">
-            <strong>Alerta Verde:</strong> Cali se mantiene estable sin picos de demanda.
+
+        <!-- TENDENCIAS -->
+        <div id="tendencias" class="card">
+            <h2>Tendencias digitales por ciudad</h2>
+
+            <div class="city-buttons">
+                <button onclick="cambiarCiudad('Bogotá')">Bogotá</button>
+                <button onclick="cambiarCiudad('Medellín')">Medellín</button>
+                <button onclick="cambiarCiudad('Cali')">Cali</button>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="tendenciasChart"></canvas>
+            </div>
         </div>
+
+        <!-- RECOMENDACIONES -->
+        <div id="recomendaciones" class="card">
+            <h2>Recomendaciones automáticas</h2>
+
+            <div id="reco"></div>
+        </div>
+
     </div>
 
-    <div id="inventarios" class="card">
-        <h2>Inventarios por ciudad</h2>
-        <ul>
-            <li>Bogotá: 22% stock disponible (riesgo)</li>
-            <li>Medellín: 41% stock disponible (moderado)</li>
-            <li>Cali: 78% stock disponible (estable)</li>
-        </ul>
-    </div>
+<script>
+    // Datos simulados
+    const ciudades = {
+        "Bogotá": { gripe: 48, tos: 32, frio: 60, inventario: 22 },
+        "Medellín": { gripe: 27, tos: 33, frio: 45, inventario: 41 },
+        "Cali": { gripe: -12, tos: 5, frio: 15, inventario: 78 }
+    };
 
-    <div id="tendencias" class="card">
-        <h2>Tendencias digitales</h2>
-        <p>Últimos 7 días:</p>
-        <ul>
-            <li>Gripe +48% en Bogotá</li>
-            <li>Tos +33% en Medellín</li>
-            <li>Resfriado -12% en Cali</li>
-        </ul>
-    </div>
+    // Gráfica Demanda
+    new Chart(document.getElementById('demandaChart'), {
+        type: 'line',
+        data: {
+            labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            datasets: [{
+                label: 'Demanda estimada nacional',
+                data: [20, 25, 40, 60, 55, 70],
+                borderColor: '#0066cc',
+                borderWidth: 3,
+                fill: false
+            }]
+        }
+    });
 
-    <div id="recomendaciones" class="card">
-        <h2>Recomendaciones automáticas</h2>
-        <ul>
-            <li>Enviar 300 unidades adicionales a Bogotá.</li>
-            <li>Reforzar distribución a Medellín en 72 horas.</li>
-            <li>Iniciar campaña preventiva en Cali sobre síntomas iniciales.</li>
-        </ul>
-    </div>
+    // Gráfica Inventarios
+    new Chart(document.getElementById('inventarioChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Bogotá', 'Medellín', 'Cali'],
+            datasets: [{
+                label: 'Inventarios (%)',
+                data: [22, 41, 78],
+                backgroundColor: ['red', 'orange', 'green']
+            }]
+        }
+    });
 
-</div>
+    // Tendencias
+    let tendenciasChart = new Chart(document.getElementById('tendenciasChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Gripe', 'Tos', 'Clima frío'],
+            datasets: [{
+                label: 'Tendencia (últimos 7 días)',
+                data: [48, 32, 60],
+                backgroundColor: '#0066cc'
+            }]
+        }
+    });
+
+    // Cambiar ciudad dinámicamente
+    function cambiarCiudad(ciudad) {
+        let data = ciudades[ciudad];
+        tendenciasChart.data.datasets[0].data = [data.gripe, data.tos, data.frio];
+        tendenciasChart.update();
+
+        document.getElementById('reco').innerHTML = `
+            <div class="alerta roja">Recomendación ciudad ${ciudad}: ${
+                data.inventario < 30 ? 'Enviar unidades urgentes' : 
+                data.inventario < 50 ? 'Refuerzo moderado' :
+                'Mantener abastecimiento'
+            }</div>
+        `;
+    }
+
+    // Alertas dashboard
+    document.getElementById("alertas").innerHTML = `
+        <div class="alerta roja">Bogotá: Búsquedas de gripe +48%</div>
+        <div class="alerta amarilla">Medellín: Tendencia de tos +33%</div>
+        <div class="alerta verde">Cali: Estable</div>
+    `;
+</script>
 
 </body>
 </html>
